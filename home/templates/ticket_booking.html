@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Ticket for {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Book Ticket for {{ movie.title }}</h1>
+
+    <!-- Thông báo (nếu có) -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="row g-3">
+        {% csrf_token %}
+        <!-- Thông tin người giữ vé -->
+        
+
+        <div class="col-md-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type" required>
+                <option value="adult">Người lớn</option>
+                <option value="child">Trẻ em</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="age" class="form-label">Age</label>
+            <input type="number" class="form-control" id="age" name="age" placeholder="Enter age" min="1" required>
+        </div>
+
+        <!-- Chọn vé -->
+        <div class="col-md-12">
+            <label for="ticket" class="form-label">Select Ticket</label>
+            <select class="form-select" id="ticket" name="ticket" required>
+                <option value="" disabled selected>Select a ticket</option>
+                {% for ticket in tickets %}
+                    <option value="{{ ticket.id }}">{{ ticket.showtime|date:"Y-m-d H:i" }} - {{ ticket.type }} - ${{ ticket.price }}</option>
+                {% endfor %}
+            </select>
+            {% if not tickets %}
+                <div class="text-danger mt-2">No tickets available for this movie.</div>
+            {% endif %}
+        </div>
+
+        <!-- Nút submit -->
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-success">Book Ticket</button>
+        </div>
+    </form>
+
+    <!-- Nút quay lại -->
+    <div class="text-center mt-3">
+        <a href="{% url 'movie_list' %}" class="btn btn-secondary">Back to Movie List</a>
+    </div>
+</div>
+{% endblock %}

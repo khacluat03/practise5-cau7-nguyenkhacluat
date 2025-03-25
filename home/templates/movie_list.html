@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Movie List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Movie List</h1>
+
+    <!-- Thông báo (nếu có) -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Danh sách phim -->
+    {% if movies %}
+        <div class="row">
+            {% for movie in movies %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie.title }}</h5>
+                            <p class="card-text">
+                                <strong>Producer:</strong> {{ movie.producer }}<br>
+                                <strong>Duration:</strong> {{ movie.duration }} minutes<br>
+                                <strong>Director:</strong> {{ movie.director }}<br>
+                                <strong>Genre:</strong> {{ movie.genre }}
+                            </p>
+                            <a href="{% url 'book_ticket' movie.id %}" class="btn btn-primary w-100">Book Ticket</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            No movies available at the moment.
+        </div>
+    {% endif %}
+
+    <!-- Nút quay lại (tùy chọn) -->
+    {% if user.is_authenticated and user.is_staff %}
+        <div class="text-center mt-4">
+            <a href="{% url 'admin:index' %}" class="btn btn-secondary">Go to Admin Dashboard</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
